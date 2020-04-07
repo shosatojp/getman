@@ -1,0 +1,41 @@
+<div class="content">
+    <button mat-raised-button (click)="addCollection()">Add Collection</button>
+
+    <div>
+        <mat-form-field class="select-collection">
+            <mat-label>Select Collection</mat-label>
+            <mat-select [value]="data.selectedCollection?.name || ''">
+                <mat-option *ngFor="let collection of data.collections"
+                    (click)="onSelectionChange(collection.collectionId)"
+                    [value]="collection.name">
+                    {{collection.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <button *ngIf="data.selectedCollection" mat-raised-button (click)="addEndpoint()">Add EndPoint</button>
+    <mat-list *ngIf="data.selectedCollection">
+        <mat-list-item matRipple *ngFor="let endpoint of data.selectedCollection.endpoints"
+            (click)="onSelectEndpoint(endpoint.requestId)" (contextmenu)="onContextMenu($event,endpoint)">
+            <mat-chip-list>
+                <mat-chip class="status-code" [ngStyle]="{'background-color':methodColor[endpoint.method]}">
+                    {{endpoint.method.toUpperCase()}}
+                </mat-chip>
+            </mat-chip-list>
+            <div class="endpoint-name">
+                {{endpoint.name || endpoint.url}}
+            </div>
+        </mat-list-item>
+    </mat-list>
+</div>
+
+<div style="visibility: hidden; position: fixed" [style.left]="contextMenuPosition.x"
+    [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu">
+</div>
+<mat-menu #contextMenu="matMenu">
+    <ng-template matMenuContent let-endpoint="endpoint">
+        <button mat-menu-item (click)="onContextMenuDelete(endpoint)">Delete</button>
+        <!-- <button mat-menu-item></button> -->
+    </ng-template>
+</mat-menu>

@@ -1,0 +1,18 @@
+<!-- <mat-toolbar color="primary" style="-webkit-app-region: drag">
+    GetMan
+</mat-toolbar> -->
+
+<!-- <div class="window-buttons">
+    <div class="window-button"></div>
+    <div class="window-button"></div>
+    <div class="window-button window-button-close"></div>
+</div> -->
+
+<mat-drawer-container style="height: 100vh;">
+    <mat-drawer mode="side" opened style="width: 300px;">
+        <app-sidemenu></app-sidemenu>
+    </mat-drawer>
+    <mat-drawer-content>
+        <app-main></app-main>
+    </mat-drawer-content>
+</mat-drawer-container>

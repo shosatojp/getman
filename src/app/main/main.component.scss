@@ -1,0 +1,126 @@
+:host {
+  min-height: 100vh;
+  margin: 0 auto;
+
+}
+
+.content {
+  margin: 0 10px;
+}
+
+.center {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  * {
+    align-self: center;
+  }
+}
+
+mat-form-field.name {
+  font-size: xx-large;
+  width: 100%;
+
+  input {
+    font-size: xx-large;
+  }
+}
+
+.raw-content {
+  width: 100%;
+
+  textarea {
+    min-height: calc(1em * 15);
+    line-height: 1.5em;
+  }
+}
+
+textarea,
+input {
+  caret-color: white !important;
+}
+
+.raw {
+  word-wrap: break-word;
+  width: 100%;
+  min-height: calc(1em*15);
+  line-height: 1.5em;
+}
+
+.params-row {
+  display: flex;
+  justify-content: space-between;
+
+  mat-form-field {
+    flex-grow: 1;
+    margin: 5px;
+  }
+
+
+}
+
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 2em;
+  cursor: pointer;
+
+  * {
+    align-self: center;
+  }
+
+  ::ng-deep .mat-checkbox-inner-container {
+    height: 20px;
+    width: 20px;
+  }
+}
+
+::ng-deep .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+.code {
+  font-family: 'Fira Code', Consolas, monospace;
+}
+
+mat-tab-group mat-tab {
+  width: 100%;
+}
+
+mat-radio-group {
+  mat-radio-button {
+    margin: 5px 10px 5px 0;
+  }
+}
+
+.method-url-row {
+  display: flex;
+  justify-content: space-between;
+
+  .url {
+    flex-grow: 1;
+    margin: 0 5px;
+    align-self: flex-end;
+  }
+
+  .send-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+
+.status {
+  margin: 10px;
+}
+
+
+#previewIframe {
+  width: 100%;
+  height: 500px;
+  border: none;
+}

@@ -1,0 +1,26 @@
+.content {
+  margin: 10px;
+}
+
+.select-collection {
+  width: 100%;
+}
+
+.status-code {
+  width: 80px;
+  text-align: center;
+}
+
+.endpoint-name {
+  margin: 0 5px;
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+
+mat-list-item {
+  cursor: pointer;
+}
+
+:host {
+  box-shadow: 0px 0px 7px black;
+}

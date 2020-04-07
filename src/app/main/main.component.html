@@ -1,0 +1,236 @@
+<div class="content" (keydown.control.enter)="send()" *ngIf="data.selectedEndpoint">
+
+    <!-- <h1>{{data.selectedEndpoint.name}}</h1> -->
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon class="example-tab-icon">sync_alt</mat-icon>
+                Request
+            </ng-template>
+            <mat-form-field appearance="" class="name">
+                <input (input)="data.saveJson()" class="code" matInput placeholder=""
+                    [(ngModel)]="data.selectedEndpoint.name">
+            </mat-form-field>
+
+            <div class="method-url-row">
+                <mat-form-field>
+                    <mat-label>Method</mat-label>
+                    <mat-select class="code" [(ngModel)]="data.selectedEndpoint.method">
+                        <mat-option (click)="data.saveJson()" class="code" *ngFor="let httpMethod of httpMethods"
+                            [value]="httpMethod">
+                            {{httpMethod}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="" class="url">
+                    <mat-label>URL</mat-label>
+                    <input (input)="data.saveJson()" class="code" matInput placeholder="https://localhost:8080/api/..."
+                        [(ngModel)]="data.selectedEndpoint.url">
+                </mat-form-field>
+
+                <div class="send-button">
+                    <button mat-raised-button color="primary" (click)="send()">
+                        Send
+                        <mat-icon>send</mat-icon>
+                    </button>
+                </div>
+            </div>
+
+
+            <mat-tab-group>
+                <mat-tab label="Headers">
+                    <div class="params-row" *ngFor="let header of data.selectedEndpoint.headers">
+                        <div class="icon-wrapper">
+                            <mat-checkbox (input)="data.saveJson()" [(ngModel)]="header.enable"></mat-checkbox>
+                        </div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Key</mat-label>
+                            <input (input)="data.saveJson()" class="code" matInput [(ngModel)]="header.key"
+                                [matAutocomplete]="auto">
+                            <mat-autocomplete #auto="matAutocomplete">
+                                <mat-option *ngFor="let header of httpHeaders" [value]="header">
+                                    {{header}}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Value</mat-label>
+                            <input (input)="data.saveJson()" class="code" matInput [(ngModel)]="header.value">
+                        </mat-form-field>
+                        <div class="icon-wrapper">
+                            <mat-icon (click)="removeHeader(header.key)">delete</mat-icon>
+                        </div>
+                    </div>
+                    <button mat-raised-button (click)="addHeader()">
+                        <mat-icon>add</mat-icon>New Header
+                    </button>
+                </mat-tab>
+                <mat-tab label="Params">
+                    <div class="params-row" *ngFor="let param of data.selectedEndpoint.params">
+                        <div class="icon-wrapper">
+                            <mat-checkbox (input)="data.saveJson()" [(ngModel)]="param.enable"></mat-checkbox>
+                        </div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Key</mat-label>
+                            <input (input)="data.saveJson()" class="code" matInput [(ngModel)]="param.key">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Value</mat-label>
+                            <input (input)="data.saveJson()" class="code" matInput [(ngModel)]="param.value">
+                        </mat-form-field>
+                        <div class="icon-wrapper">
+                            <mat-icon (click)="removeParam(param.key)">delete</mat-icon>
+                        </div>
+                    </div>
+                    <button mat-raised-button (click)="addParam()">
+                        <mat-icon>add</mat-icon>New Param
+                    </button>
+                </mat-tab>
+                <mat-tab label="Body">
+                    <mat-radio-group (change)="contentTypeChanged($event)">
+                        <mat-radio-button value="application/json">
+                            JSON</mat-radio-button>
+                        <mat-radio-button value="application/x-www-form-urlencoded">URL Form Encoded</mat-radio-button>
+                        <mat-radio-button value="text/plain">Raw
+                        </mat-radio-button>
+                    </mat-radio-group>
+                    <mat-form-field class="raw-content" appearance="outline">
+                        <mat-label></mat-label>
+                        <textarea (input)="data.saveJson()" class="code" matInput
+                            [(ngModel)]="data.selectedEndpoint.body"></textarea>
+                    </mat-form-field>
+                </mat-tab>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon">code</mat-icon>
+                        Pre Script
+                    </ng-template>
+                    <mat-form-field class="raw-content" appearance="outline">
+                        <mat-label>Pre Request Javascript Code</mat-label>
+                        <textarea (input)="data.saveJson()" class="code" matInput
+                            [(ngModel)]="data.selectedEndpoint.preScript"></textarea>
+                    </mat-form-field>
+                </mat-tab>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon">code</mat-icon>
+                        Post Script
+                    </ng-template>
+                    <mat-form-field class="raw-content" appearance="outline">
+                        <mat-label>Post Request Javascript Code</mat-label>
+                        <textarea (input)="data.saveJson()" class="code" matInput
+                            [(ngModel)]="data.selectedEndpoint.postScript"></textarea>
+                    </mat-form-field>
+                </mat-tab>
+            </mat-tab-group>
+
+            <div *ngIf="response">
+                <mat-chip-list class="status" *ngIf="response">
+                    <mat-chip [ngStyle]="{'background-color': getStatusColor(response.statusCode) }">
+                        {{response.statusCode}}
+                        {{response.statusMessage}}</mat-chip>
+                    <mat-chip color="accent" selected>{{response.timems}}ms</mat-chip>
+                </mat-chip-list>
+                <mat-tab-group>
+                    <mat-tab label="Headers">
+                        <div *ngIf="response">
+                            <div class="params-row" *ngFor="let header of response.headers">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Key</mat-label>
+                                    <input appClickSelect readonly class="code" matInput [(ngModel)]="header.key">
+                                </mat-form-field>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Value</mat-label>
+                                    <input appClickSelect readonly class="code" matInput [(ngModel)]="header.value">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Body">
+                        <div class="code raw" *ngIf="response">{{response.body}}</div>
+                    </mat-tab>
+                    <mat-tab label="Preview">
+                        <iframe id="previewIframe" (load)="setPreviewIframe()"></iframe>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon class="example-tab-icon">dashboard</mat-icon>
+                Environment
+            </ng-template>
+
+            <mat-form-field>
+                <mat-label>Environment</mat-label>
+                <mat-select [value]="data.selectedEnvironment?.name || ''">
+                    <mat-option (click)="onSelectEnvironment(environment.environmentId)"
+                        *ngFor="let environment of data.environments" [value]="environment.name">
+                        {{environment.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-tab-group *ngIf="data.selectedEnvironment">
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon">cake</mat-icon>
+                        Cookie
+                    </ng-template>
+                    <div class="params-row" *ngFor="let param of data.selectedEnvironment.cookies">
+                        <div class="icon-wrapper">
+                            <mat-checkbox (input)="data.saveJson()" [(ngModel)]="param.enable"></mat-checkbox>
+                        </div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Key</mat-label>
+                            <input (input)="data.saveJson()" class="code" matInput [(ngModel)]="param.key">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Value</mat-label>
+                            <input (input)="data.saveJson()" class="code" matInput [(ngModel)]="param.value">
+                        </mat-form-field>
+                        <div class="icon-wrapper">
+                            <mat-icon (click)="removeCookie(param.key)">delete</mat-icon>
+                        </div>
+                    </div>
+                    <button mat-raised-button (click)="addCookie()">
+                        <mat-icon>add</mat-icon>New Cookie
+                    </button>
+                </mat-tab>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon">vpn_key</mat-icon>
+                        Variables
+                    </ng-template>
+                    <div class="params-row" *ngFor="let variable of data.selectedEnvironment.variables">
+                        <div class="icon-wrapper">
+                            <mat-checkbox (input)="data.saveJson()" [(ngModel)]="variable.enable"></mat-checkbox>
+                        </div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Key</mat-label>
+                            <input (input)="data.saveJson()" class="code" matInput [(ngModel)]="variable.key">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Value</mat-label>
+                            <input (input)="data.saveJson()" class="code" matInput [(ngModel)]="variable.value">
+                        </mat-form-field>
+                        <div class="icon-wrapper">
+                            <mat-icon (click)="removeVariable(variable.key)">delete</mat-icon>
+                        </div>
+                    </div>
+                    <button mat-raised-button (click)="addVariable()">
+                        <mat-icon>add</mat-icon>New Variable
+                    </button>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+
+<div class="center" *ngIf="!data.selectedEndpoint">
+    <h3>
+        Select Collection and End Point
+    </h3>
+</div>

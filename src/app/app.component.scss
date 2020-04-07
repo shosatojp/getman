@@ -1,0 +1,28 @@
+#sidemain {
+  display: grid;
+  grid-template-columns: 30% auto;
+}
+
+.window-buttons {
+  display: flex;
+  position: fixed;
+  z-index: 10000;
+  top: 90px;
+  right: 0;
+  background-color: darkgreen;
+}
+
+.window-button {
+  z-index: 10000;
+  height: 40px;
+  width: 50px;
+  transition-duration: 300ms;
+}
+
+.window-button:hover {
+  background-color: gray;
+}
+
+.window-button-close:hover {
+  background-color: red;
+}
