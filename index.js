@@ -4,6 +4,8 @@ const path = require("path");
 const https = require('https');
 const fs = require('fs');
 
+const configPath = 'getman.json';
+
 require('electron-reload')(path.join(__dirname, 'dist'), {
     electron: `${__dirname}/node_modules/.bin/electron.cmd`
 });
@@ -11,13 +13,17 @@ require('electron-reload')(path.join(__dirname, 'dist'), {
 let mainWindow;
 
 ipcMain.handle('save', (ev, obj) => {
-    fs.writeFile('getman.json', Buffer.from(JSON.stringify(obj), 'utf-8'), () => 0);
+    fs.writeFile(configPath, Buffer.from(JSON.stringify(obj), 'utf-8'), () => 0);
 });
 ipcMain.handle('load', async (ev) => {
     return await new Promise((res, rej) => {
-        fs.readFile('getman.json', (err, data) => {
-            res(JSON.parse(data.toString('utf-8')));
-        });
+        if (fs.existsSync(configPath)) {
+            fs.readFile(configPath, (err, data) => {
+                res(JSON.parse(data.toString('utf-8')));
+            });
+        } else {
+            res();
+        }
     });
 });
 ipcMain.handle('send', async (ev, endpoint) => {

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { DataService } from '../data.service';
-import { MethodColor, IEndPoint } from '../headers';
+import { MethodColor, IEndPoint, generateId } from '../headers';
 
 @Component({
     selector: 'app-sidemenu',
@@ -55,7 +55,7 @@ export class SidemenuComponent implements OnInit {
             headers: [],
             params: [],
             name: '',
-            requestId: this.generateId(10),
+            requestId: generateId(10),
             postScript: '',
             preScript: '',
             body: ''
@@ -64,20 +64,10 @@ export class SidemenuComponent implements OnInit {
 
     addCollection() {
         this.data.collections.push({
-            collectionId: this.generateId(10),
+            collectionId: generateId(10),
             name: 'no name',
             endpoints: [],
         });
         this.data.saveJson();
     }
-
-    generateId(n: number) {
-        let result = '';
-        const str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        for (let i = 0; i < n; i++) {
-            result += str[Math.floor(Math.random() * str.length)];
-        }
-        return result;
-    }
-
 }

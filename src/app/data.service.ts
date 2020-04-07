@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ICollection, IEndPoint, KeyValuePair, IEnvironment } from './headers';
+import { ICollection, IEndPoint, KeyValuePair, IEnvironment, generateId } from './headers';
 import { IpcRenderer } from 'electron';
 
 @Injectable({
@@ -18,8 +18,12 @@ export class DataService {
 
     constructor() {
         this.loadJson().then(() => {
-            this.selectedCollection = this.collections[0];
-            this.selectedEndpoint = this.selectedCollection.endpoints[0];
+            if (this.collections.length) {
+                this.selectedCollection = this.collections[0];
+                if (this.selectedCollection.endpoints.length) {
+                    this.selectedEndpoint = this.selectedCollection.endpoints[0];
+                }
+            }
         });
     }
 
@@ -35,8 +39,13 @@ export class DataService {
             collections: any,
             environments: any,
         } = await this.ipc.invoke('load');
-        this.collections = obj.collections;
-        this.environments = obj.environments;
+        this.collections = obj?.collections || [];
+        this.environments = obj?.environments || [{
+            name: 'Default',
+            cookies: [],
+            variables: [],
+            environmentId: generateId(10),
+        }];
         this.selectedEnvironment = this.environments[0];
     }
 
